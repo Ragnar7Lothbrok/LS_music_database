@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Song;
+use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
@@ -25,8 +26,58 @@ class PageController extends Controller
         return view('add');
     }
 
-    public function updateSong()
+    public function editSong($id)
     {
-        return view('update');
+        // Buscar la canción por su ID
+        $song = Song::findOrFail($id);
+
+        // Pasar los datos de la canción a la vista de edición
+        return view('edit', compact('song'));
+    }
+
+    public function store(Request $request)
+    {
+        // Validar los datos del formulario
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'group' => 'required|string|max:255',
+            'style' => 'required|string|max:50',
+            'release_date' => 'required|date',
+            'rating' => 'required|integer|min:0|max:10',
+        ]);
+
+        // Crear una nueva canción en la base de datos
+        Song::create($request->all());
+
+        // Redirigir al home con un mensaje de éxito
+        return redirect('/')->with('success', 'Canción añadida correctamente.');
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Validar los datos del formulario
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'group' => 'required|string|max:255',
+            'style' => 'required|string|max:50',
+            'release_date' => 'required|date',
+            'rating' => 'required|integer|min:0|max:10',
+        ]);
+
+        // Buscar la canción por su ID y actualizarla
+        $song = Song::findOrFail($id);
+        $song->update($request->all());
+
+        // Redirigir al home con un mensaje de éxito
+        return redirect('/')->with('success', 'Canción modificada correctamente.');
+    }
+
+    public function destroy($id)
+    {
+        // Eliminar la canción por su ID
+        Song::destroy($id);
+
+        // Redirigir al home con un mensaje de éxito
+        return redirect('/')->with('success', 'Canción eliminada correctamente.');
     }
 }

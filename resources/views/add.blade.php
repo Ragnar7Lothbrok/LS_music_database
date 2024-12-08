@@ -2,7 +2,24 @@
 
 @section('content')
     <h2>Añadir Canción</h2>
-    <form action="#" method="POST">
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('songs.store') }}" method="POST">
         @csrf
         <div class="mb-3">
             <label for="title" class="form-label">Título</label>
