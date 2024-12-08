@@ -2,29 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Song;
+
 class PageController extends Controller
 {
-    // Método para la página principal
     public function home()
     {
-        return view('home'); // Renderiza la vista home.blade.php
+        // Recuperar todas las canciones de la base de datos
+        $songs = Song::all();
+
+        // Pasar las canciones a la vista
+        return view('home', compact('songs'));
     }
 
-    // Método para la página de contacto
     public function contact()
     {
-        return view('contact'); // Renderiza la vista contact.blade.php
+        return view('contact');
     }
 
-    // Método para añadir canción
     public function addSong()
     {
-        return view('add'); // Renderiza la vista add.blade.php
+        return view('add');
     }
 
-    // Método para modificar canción
     public function updateSong()
     {
-        return view('update'); // Renderiza la vista update.blade.php
+        return view('update');
     }
 }
