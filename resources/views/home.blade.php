@@ -9,29 +9,46 @@
         </div>
     @endif
 
+    <!-- Filtro por géneros -->
+    <h3>Filtrar por Género</h3>
+    <form method="GET" action="{{ route('home') }}" class="mb-4">
+        <div class="mb-3">
+            @foreach ($styles as $style)
+                <label class="me-2">
+                    <input type="checkbox" name="styles[]" value="{{ $style }}" 
+                    {{ in_array($style, request('styles', [])) ? 'checked' : '' }}>
+                    {{ $style }}
+                </label>
+            @endforeach
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">Aplicar Filtros</button>
+        <a href="{{ route('home') }}" class="btn btn-secondary btn-sm">Limpiar Filtros</a>
+    </form>
+
+    <!-- Lista de canciones -->
     <h3>Lista de Canciones</h3>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Título</th>
-                <th>Grupo</th>
-                <th>Estilo</th>
-                <th>Fecha de Lanzamiento</th>
-                <th>Puntuación</th>
-                <th>Acciones</th>
+                <th class="text-center">ID</th>
+                <th class="text-center">Título</th>
+                <th class="text-center">Grupo</th>
+                <th class="text-center">Estilo</th>
+                <th class="text-center">Año de Lanzamiento</th> <!-- Nueva columna centrada -->
+                <th class="text-center">Puntuación</th>
+                <th class="text-center">Acciones</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($songs as $song)
                 <tr>
-                    <td>{{ $song->id }}</td>
-                    <td>{{ $song->title }}</td>
-                    <td>{{ $song->group }}</td>
-                    <td>{{ $song->style }}</td>
-                    <td>{{ $song->release_date }}</td>
-                    <td>{{ $song->rating }}</td>
-                    <td>
+                    <td class="text-center">{{ $song->id }}</td>
+                    <td class="text-center">{{ $song->title }}</td>
+                    <td class="text-center">{{ $song->group }}</td>
+                    <td class="text-center">{{ $song->style }}</td>
+                    <td class="text-center">{{ $song->release_date }}</td> <!-- Columna centrada -->
+                    <td class="text-center">{{ $song->rating }}</td>
+                    <td class="text-center">
                         <!-- Botón para modificar -->
                         <a href="{{ route('songs.edit', $song->id) }}" class="btn btn-warning btn-sm">Modificar</a>
 
@@ -46,4 +63,9 @@
             @endforeach
         </tbody>
     </table>
+
+    <!-- Paginación -->
+    <div class="d-flex justify-content-center">
+        {{ $songs->links('pagination::bootstrap-5') }}
+    </div>
 @endsection

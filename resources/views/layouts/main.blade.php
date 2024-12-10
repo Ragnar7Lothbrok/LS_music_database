@@ -14,11 +14,10 @@
         <div class="row">
             <nav class="col-md-3 bg-light sidebar py-3">
                 <ul class="nav flex-column">
-                    <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/contact">Contacto</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/add">Añadir Canción</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/update">Modificar Canción</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contacto</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('songs.create') }}">Añadir Canción</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('songs.editById') }}">Modificar Canción por ID</a></li>
                 </ul>
             </nav>
             <main class="col-md-9 py-3">

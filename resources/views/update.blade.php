@@ -1,48 +1,61 @@
 @extends('layouts.main')
 
 @section('content')
-    <h2>Modificar o Eliminar Canciones</h2>
+    <h2>{{ isset($song) ? 'Editar Canción' : 'Buscar Canción para Modificar' }}</h2>
 
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+    <!-- Mostrar errores de validación -->
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
         </div>
     @endif
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Título</th>
-                <th>Grupo</th>
-                <th>Estilo</th>
-                <th>Fecha de Lanzamiento</th>
-                <th>Puntuación</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($songs as $song)
-                <tr>
-                    <td>{{ $song->id }}</td>
-                    <td>{{ $song->title }}</td>
-                    <td>{{ $song->group }}</td>
-                    <td>{{ $song->style }}</td>
-                    <td>{{ $song->release_date }}</td>
-                    <td>{{ $song->rating }}</td>
-                    <td>
-                        <!-- Botón para editar -->
-                        <a href="{{ route('songs.edit', $song->id) }}" class="btn btn-warning btn-sm">Modificar</a>
+    <!-- Formulario para buscar o editar una canción -->
+    <form action="{{ isset($song) ? route('songs.update', $song->id) : route('songs.editById') }}" method="POST">
+        @csrf
+        @if (isset($song))
+            @method('PUT') <!-- Si estamos editando -->
+        @endif
 
-                        <!-- Botón para eliminar -->
-                        <form action="{{ route('songs.destroy', $song->id) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        <!-- Campo oculto para el ID si se está editando -->
+        @if (isset($song))
+            <input type="hidden" name="id" value="{{ $song->id }}">
+        @else
+            <!-- Campo para buscar una canción por ID -->
+            <div class="mb-3">
+                <label for="id" class="form-label">ID de la Canción</label>
+                <input type="number" class="form-control" id="id" name="id" placeholder="ID de la Canción" required>
+            </div>
+        @endif
+
+        <!-- Campos para los datos de la canción -->
+        <div class="mb-3">
+            <label for="title" class="form-label">Título</label>
+            <input type="text" class="form-control" id="title" name="title" value="{{ $song->title ?? '' }}" placeholder="Título de la canción" {{ isset($song) ? 'required' : 'disabled' }}>
+        </div>
+        <div class="mb-3">
+            <label for="group" class="form-label">Grupo</label>
+            <input type="text" class="form-control" id="group" name="group" value="{{ $song->group ?? '' }}" placeholder="Grupo o Artista" {{ isset($song) ? 'required' : 'disabled' }}>
+        </div>
+        <div class="mb-3">
+            <label for="style" class="form-label">Estilo</label>
+            <input type="text" class="form-control" id="style" name="style" value="{{ $song->style ?? '' }}" placeholder="Estilo musical" {{ isset($song) ? 'required' : 'disabled' }}>
+        </div>
+        <div class="mb-3">
+            <label for="release_date" class="form-label">Fecha de Lanzamiento</label>
+            <input type="date" class="form-control" id="release_date" name="release_date" value="{{ $song->release_date ?? '' }}" {{ isset($song) ? 'required' : 'disabled' }}>
+        </div>
+        <div class="mb-3">
+            <label for="rating" class="form-label">Puntuación</label>
+            <input type="number" class="form-control" id="rating" name="rating" value="{{ $song->rating ?? '' }}" placeholder="Puntuación (1-10)" min="1" max="10" {{ isset($song) ? 'required' : 'disabled' }}>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            {{ isset($song) ? 'Guardar Cambios' : 'Buscar' }}
+        </button>
+    </form>
 @endsection

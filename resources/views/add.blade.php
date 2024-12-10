@@ -1,14 +1,9 @@
 @extends('layouts.main')
 
 @section('content')
-    <h2>Añadir Canción</h2>
+    <h2 class="mb-4">Añadir Canción</h2>
 
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
+    <!-- Mostrar errores de validación -->
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
@@ -19,6 +14,14 @@
         </div>
     @endif
 
+    <!-- Mostrar mensaje de éxito -->
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <!-- Formulario para añadir una canción -->
     <form action="{{ route('songs.store') }}" method="POST">
         @csrf
         <div class="mb-3">
@@ -34,12 +37,15 @@
             <input type="text" class="form-control" id="style" name="style" placeholder="Estilo musical" required>
         </div>
         <div class="mb-3">
-            <label for="release_date" class="form-label">Fecha de Lanzamiento</label>
-            <input type="date" class="form-control" id="release_date" name="release_date" required>
+            <label for="release_date" class="form-label">Año de Lanzamiento</label>
+            <input type="number" class="form-control" id="release_date" name="release_date" 
+                placeholder="Año de Lanzamiento" 
+                min="1900" max="{{ date('Y') }}" required>
         </div>
+
         <div class="mb-3">
             <label for="rating" class="form-label">Puntuación</label>
-            <input type="number" class="form-control" id="rating" name="rating" placeholder="Puntuación (0-10)" min="0" max="10" required>
+            <input type="number" class="form-control" id="rating" name="rating" placeholder="Puntuación (1-10)" min="1" max="10" required>
         </div>
         <button type="submit" class="btn btn-primary">Añadir</button>
     </form>

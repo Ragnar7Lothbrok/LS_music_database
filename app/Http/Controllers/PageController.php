@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Song;
+use App\Models\Song; // Importar el modelo Song
 use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    public function home()
+    public function home(Request $request)
     {
-        // Recuperar todas las canciones de la base de datos
-        $songs = Song::all();
+        $styles = Song::select('style')->distinct()->pluck('style');
+        $songs = Song::when($request->styles, function ($query) use ($request) {
+            return $query->whereIn('style', $request->styles);
+        })->paginate(5);
 
-        // Pasar las canciones a la vista
-        return view('home', compact('songs'));
+        return view('home', compact('songs', 'styles'));
     }
 
     public function contact()
@@ -28,56 +29,64 @@ class PageController extends Controller
 
     public function editSong($id)
     {
-        // Buscar la canción por su ID
         $song = Song::findOrFail($id);
-
-        // Pasar los datos de la canción a la vista de edición
         return view('edit', compact('song'));
     }
 
     public function store(Request $request)
     {
-        // Validar los datos del formulario
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'group' => 'required|string|max:255',
             'style' => 'required|string|max:50',
-            'release_date' => 'required|date',
-            'rating' => 'required|integer|min:0|max:10',
+            'release_date' => 'required|integer|min:1900|max:' . date('Y'),
+            'rating' => 'required|integer|min:1|max:10',
         ]);
 
-        // Crear una nueva canción en la base de datos
-        Song::create($request->all());
+        Song::create($validatedData);
 
-        // Redirigir al home con un mensaje de éxito
-        return redirect('/')->with('success', 'Canción añadida correctamente.');
+        return redirect()->route('home')->with('success', '¡Canción añadida correctamente!');
     }
 
     public function update(Request $request, $id)
     {
-        // Validar los datos del formulario
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'group' => 'required|string|max:255',
             'style' => 'required|string|max:50',
-            'release_date' => 'required|date',
-            'rating' => 'required|integer|min:0|max:10',
+            'release_date' => 'required|integer|min:1900|max:' . date('Y'),
+            'rating' => 'required|integer|min:1|max:10',
         ]);
 
-        // Buscar la canción por su ID y actualizarla
         $song = Song::findOrFail($id);
-        $song->update($request->all());
+        $song->update($validatedData);
 
-        // Redirigir al home con un mensaje de éxito
-        return redirect('/')->with('success', 'Canción modificada correctamente.');
+        return redirect()->route('home')->with('success', '¡Canción actualizada correctamente!');
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        // Eliminar la canción por su ID
-        Song::destroy($id);
+        $song = Song::findOrFail($id);
+        $song->delete();
 
-        // Redirigir al home con un mensaje de éxito
-        return redirect('/')->with('success', 'Canción eliminada correctamente.');
+        return redirect()->route('home')->with('success', '¡Canción eliminada correctamente!');
+    }
+
+    public function editById()
+    {
+        return view('editById');
+    }
+
+    public function updateById(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|exists:songs,id',
+            'release_date' => 'nullable|integer|min:1900|max:' . date('Y'),
+        ]);
+
+        $song = Song::findOrFail($request->id);
+        $song->update(array_filter($request->only(['title', 'group', 'style', 'release_date', 'rating'])));
+
+        return redirect()->route('home')->with('success', '¡Canción actualizada correctamente!');
     }
 }
