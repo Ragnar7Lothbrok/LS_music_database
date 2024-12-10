@@ -34,7 +34,7 @@
                 <th class="text-center">Título</th>
                 <th class="text-center">Grupo</th>
                 <th class="text-center">Estilo</th>
-                <th class="text-center">Año de Lanzamiento</th> <!-- Nueva columna centrada -->
+                <th class="text-center">Año de Lanzamiento</th>
                 <th class="text-center">Puntuación</th>
                 <th class="text-center">Acciones</th>
             </tr>
@@ -46,7 +46,7 @@
                     <td class="text-center">{{ $song->title }}</td>
                     <td class="text-center">{{ $song->group }}</td>
                     <td class="text-center">{{ $song->style }}</td>
-                    <td class="text-center">{{ $song->release_date }}</td> <!-- Columna centrada -->
+                    <td class="text-center">{{ $song->release_date }}</td>
                     <td class="text-center">{{ $song->rating }}</td>
                     <td class="text-center">
                         <!-- Botón para modificar -->

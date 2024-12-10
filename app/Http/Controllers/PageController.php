@@ -89,4 +89,24 @@ class PageController extends Controller
 
         return redirect()->route('home')->with('success', '¡Canción actualizada correctamente!');
     }
+
+    public function filterByYear(Request $request)
+    {
+        // Por ahora, simplemente devuelve una vista vacía
+        return view('filterByYear');
+    }
+
+    public function filterByYearResults(Request $request)
+    {
+        // Validar el año ingresado
+        $request->validate([
+            'year' => 'required|integer|min:1900|max:' . date('Y'),
+        ]);
+
+        // Obtener las canciones del año especificado
+        $songs = \App\Models\Song::where('release_date', $request->year)->get();
+
+        // Retornar la vista con las canciones encontradas
+        return view('filterByYear', compact('songs'));
+    }
 }

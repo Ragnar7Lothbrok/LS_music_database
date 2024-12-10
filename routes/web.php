@@ -29,3 +29,9 @@ Route::get('/editById', [PageController::class, 'editById'])->name('songs.editBy
 
 // Ruta para manejar la actualización por ID
 Route::post('/songs/updateById', [PageController::class, 'updateById'])->name('songs.updateById');
+
+// Ruta para mostrar la página de filtro por año
+Route::get('/filterByYear', [PageController::class, 'filterByYear'])->name('songs.filterByYear');
+
+// Ruta para manejar la búsqueda y mostrar resultados
+Route::get('/filterByYear/results', [PageController::class, 'filterByYearResults'])->name('songs.filterByYearResults');
