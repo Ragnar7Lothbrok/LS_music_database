@@ -66,6 +66,6 @@
 
     <!-- Paginación -->
     <div class="d-flex justify-content-center">
-        {{ $songs->links('pagination::bootstrap-5') }}
+        {{ $songs->appends(request()->query())->links('pagination::bootstrap-5') }}
     </div>
 @endsection

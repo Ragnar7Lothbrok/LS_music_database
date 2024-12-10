@@ -14,7 +14,7 @@ class PageController extends Controller
             return $query->whereIn('style', $request->styles);
         })->paginate(5);
 
-        return view('home', compact('songs', 'styles'));
+        return view('home', compact('songs', 'styles'))->with('filters', $request->all());
     }
 
     public function contact()
